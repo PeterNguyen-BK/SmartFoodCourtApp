@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -89,8 +90,8 @@ public class Cart extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Request request =  new Request(
-                        Common.currentUser.getName(),
                         edtPhone.getText().toString(),
+                        Common.currentUser.getName(),
                         txtTotalPrice.getText().toString(),
                         cart
                 );
@@ -118,9 +119,13 @@ public class Cart extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         //Calculate Total
-        int total = 0;
-        for (Order order:cart)
-            total+=(Integer.parseInt(order.getPrice()))*(Integer.parseInt(order.getQuantity()));
+        float total = 0;
+        for (Order order:cart) {
+            float disc = (1 - (Float.parseFloat(order.getDiscount()))/100);
+            if (Integer.parseInt(order.getDiscount()) == 0)
+            total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(order.getQuantity()));
+            else total += (Integer.parseInt(order.getPrice())) * (1 - (Float.parseFloat(order.getDiscount()))/100) * (Integer.parseInt(order.getQuantity()));
+        }
         Locale locale = new Locale("vi", "VN");
         NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
         txtTotalPrice.setText(fmt.format(total));
