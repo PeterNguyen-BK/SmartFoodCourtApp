@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -71,6 +72,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         //Set name for user
         View headerView = navigationView.getHeaderView(0);
@@ -87,13 +89,19 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_menu, R.id.nav_cart, R.id.nav_orders, R.id.nav_sign_out)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+//        mAppBarConfiguration = new AppBarConfiguration.Builder(
+//                R.id.nav_home, R.id.nav_menu, R.id.nav_cart, R.id.nav_orders, R.id.nav_sign_out)
+//                .setDrawerLayout(drawer)
+//                .build();
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//        NavigationUI.setupWithNavController(navigationView, navController);
+
+        ActionBarDrawerToggle toggle =
+                new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
     }
 
     private void loadMenu() {
@@ -139,10 +147,16 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         if (id == R.id.nav_menu){
 
         }else if (id == R.id.nav_cart){
+            Intent cartIntent = new Intent(Home.this, Cart.class);
+            startActivity(cartIntent);
 
         }else if (id == R.id.nav_orders){
+            Toast.makeText(getApplicationContext(), "Order", Toast.LENGTH_SHORT).show();
+            Intent orderIntent = new Intent(Home.this, OrderStatus.class);
+            startActivity(orderIntent);
 
         }else if (id == R.id.nav_sign_out){
+            Toast.makeText(getApplicationContext(), "Sign out", Toast.LENGTH_SHORT).show();
             Intent signIn = new Intent(Home.this, SignIn.class);
             signIn.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(signIn);
