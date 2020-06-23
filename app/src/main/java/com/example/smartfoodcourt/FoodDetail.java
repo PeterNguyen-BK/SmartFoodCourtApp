@@ -22,9 +22,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class FoodDetail extends AppCompatActivity {
 
-    TextView food_name, food_price, food_description;
+    TextView food_name, food_price, food_description, food_discount;
     ImageView food_image;
     CollapsingToolbarLayout collapsingToolbarLayout;
     FloatingActionButton btnCart;
@@ -69,6 +72,7 @@ public class FoodDetail extends AppCompatActivity {
         food_name = (TextView)findViewById(R.id.food_name);
         food_price = (TextView)findViewById(R.id.food_price);
         food_image = (ImageView)findViewById(R.id.img_food);
+        food_discount = (TextView)findViewById(R.id.food_discount);
 
         collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing);
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppbar);
@@ -92,7 +96,16 @@ public class FoodDetail extends AppCompatActivity {
                 Picasso.with(getBaseContext()).load(currentFood.getImage()).into(food_image);
                 collapsingToolbarLayout.setTitle(currentFood.getName());
 
-                food_price.setText(currentFood.getPrice());
+                if (currentFood.getDiscount() == "0")
+                    food_price.setText(currentFood.getPrice());
+                else {
+                    float real_price = (Integer.parseInt(currentFood.getPrice())) * (1 - (Float.parseFloat(currentFood.getDiscount()))/100);
+                    Locale locale = new Locale("vi", "VN");
+                    NumberFormat fmt = NumberFormat.getCurrencyInstance(locale);
+                    food_price.setText(fmt.format(real_price));
+                }
+
+                food_discount.setText(currentFood.getDiscount());
 
                 food_name.setText(currentFood.getName());
 
